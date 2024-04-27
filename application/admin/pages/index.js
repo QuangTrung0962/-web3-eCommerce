@@ -28,6 +28,17 @@ export default function Home() {
                     <h2>
                         Admin <b>{address}</b>{' '}
                     </h2>
+
+                    {address && (
+                        <ConnectWallet
+                            btnTitle={'Đăng nhập'}
+                            modalTitle={'Phương thức đăng nhập'}
+                            theme={'light'}
+                            modalSize={'wide'}
+                            modalTitleIconUrl={''}
+                            showThirdwebBranding={false}
+                        />
+                    )}
                 </div>
             </Layout>
         </>
