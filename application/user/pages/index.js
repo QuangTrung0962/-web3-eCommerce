@@ -11,9 +11,9 @@ export default function HomePage({}) {
     featuredProductId,
   ]);
 
-  //Take 10 newest products
+  //Take 8 newest products
   const { data: newProducts } = useContractRead(contract, "getAllProducts");
-  const products = newProducts?.slice(-10).reverse();
+  const products = newProducts?.slice(-8).reverse();
 
   return (
     <div>

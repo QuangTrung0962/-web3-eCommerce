@@ -1,0 +1,10 @@
+/* @tailwind base;*/
+@tailwind components;
+@tailwind utilities;
+
+.newOrder-btn {
+  background-color: #000 !important;
+  color: #fff !important;
+  padding: 5px 10px !important;
+  min-height: auto !important;
+}

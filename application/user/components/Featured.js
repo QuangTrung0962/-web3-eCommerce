@@ -28,8 +28,8 @@ const Desc = styled.p`
 
 const ColumnsWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1.3fr 1.1fr;
-  gap: 40px;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 50px;
   img {
     max-width: 100%;
     max-height: 200px;

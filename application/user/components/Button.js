@@ -9,6 +9,7 @@ export const ButtonStyle = css`
   display: inline-flex;
   align-items: center;
   text-decoration: none;
+  background-color: #ccc;
   font-family: "Poppins", sans-serif;
   svg {
     height: 16px;
