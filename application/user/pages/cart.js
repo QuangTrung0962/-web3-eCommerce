@@ -84,7 +84,8 @@ const CenterH2 = styled.h2`
 `;
 
 export default function CartPage() {
-  const { cartProducts, addProduct, removeProduct } = useContext(CartContext);
+  const { cartProducts, addProduct, removeProduct, clearCart } =
+    useContext(CartContext);
   const [products, setProducts] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -93,8 +94,7 @@ export default function CartPage() {
   const [district, setDistrict] = useState("");
   const [ward, setWard] = useState("");
   const [details, setDetails] = useState("");
-
-  const depositAmount = 0.001;
+  const [clear, setclear] = useState(false);
   const { contract } = useContract(CONTRACT_STORE_ADDRESS);
 
   const {
@@ -179,6 +179,12 @@ export default function CartPage() {
     }
   }, [cartProducts]);
 
+  useEffect(() => {
+    if (createOrderSuccess) {
+      clearCart();
+    }
+  }, [createOrderSuccess]);
+
   if (createOrderSuccess) {
     return (
       <>
@@ -202,7 +208,9 @@ export default function CartPage() {
         <ColumnsWrapper>
           <Box>
             <CenterH2>Giỏ hàng</CenterH2>
-            {!cartProducts?.length && <div>Giỏ hàng của bạn đang trống !</div>}
+            {!cartProducts?.length && !createOrderSuccess && (
+              <div>Giỏ hàng của bạn đang trống !</div>
+            )}
 
             {products && products?.length > 0 && (
               <Table>

@@ -1,6 +1,6 @@
 import Featured from "../components/Featured";
 import Header from "../components/Header";
-import { CONTRACT_PRODUCT_ADDRESS, SDK } from "../../admin/constants/constant";
+import { CONTRACT_PRODUCT_ADDRESS } from "../../admin/constants/constant";
 import { useContractRead, useContract } from "@thirdweb-dev/react";
 import NewProducts from "../components/NewProduct";
 

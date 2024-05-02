@@ -74,7 +74,7 @@ contract StoreOwner {
         require(success, "Failed to send Ether to owner");
     }
 
-    function withdrawDepositSafely() public onlyOwner {
+    function withdrawDepositSafely() external onlyOwner {
         uint256 amount = address(this).balance;
         require(amount > 0, "There are no funds to withdraw");
         payable(owner).transfer(amount);
@@ -88,12 +88,8 @@ contract StoreOwner {
         require(_ordersId < orders.length, "Order does not exist");
         require(!orders[_ordersId].paid, "Order is already paid");
 
-        uint256 amount = orders[_ordersId].total;
-        require(amount <= address(this).balance, "Not enought money");
-
         orders[_ordersId].paid = true;
-        uint256 amountInWei = amount * 1 ether;
-        payable(owner).transfer(amountInWei);
+      
         delete orders[_ordersId];
     }
 

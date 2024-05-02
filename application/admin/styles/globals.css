@@ -45,7 +45,9 @@ table.basic thead tr th {
 }
 
 table.basic tr td {
-    @apply px-4 py-1;
+    @apply py-1;
+    padding-left: 3rem;
+    padding-right: 1rem;
 }
 
 table.basic a {
