@@ -34,8 +34,6 @@ export default function EditProductPage() {
                         price={product.price.toString()}
                         images={product.images}
                         catergoryId={product.catergoryId}
-                        color={product.property.color}
-                        memoryStore={product.property.memoryStore}
                         func={editProductFunc}
                     />
                 </>

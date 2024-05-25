@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Logo from './Logo';
+import { useDisconnect } from '@thirdweb-dev/react';
 
 export default function Nav({ show }) {
     const inactiveLink = 'flex gap-1 p-1';
@@ -9,6 +10,7 @@ export default function Nav({ show }) {
     const activeIcon = inactiveIcon + ' text-primary';
     const router = useRouter();
     const { pathname } = router;
+    const disconnect = useDisconnect();
 
     return (
         <aside
@@ -22,14 +24,14 @@ export default function Nav({ show }) {
             </div>
 
             <nav className="flex flex-col gap-2">
-                <Link href={'/'} className={pathname === '/' ? activeLink : inactiveLink}>
+                <Link href={'/home'} className={pathname === '/home' ? activeLink : inactiveLink}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className={pathname === '/' ? activeIcon : inactiveIcon}
+                        className={pathname === '/home' ? activeIcon : inactiveIcon}
                     >
                         <path
                             strokeLinecap="round"
@@ -60,8 +62,8 @@ export default function Nav({ show }) {
                     Sản phẩm
                 </Link>
                 <Link
-                    href={'/catergories'}
-                    className={pathname.includes('/catergories') ? activeLink : inactiveLink}
+                    href={'/categories'}
+                    className={pathname.includes('/categories') ? activeLink : inactiveLink}
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +71,7 @@ export default function Nav({ show }) {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className={pathname.includes('/catergories') ? activeIcon : inactiveIcon}
+                        className={pathname.includes('/categories') ? activeIcon : inactiveIcon}
                     >
                         <path
                             strokeLinecap="round"
@@ -100,7 +102,28 @@ export default function Nav({ show }) {
                     Đơn hàng
                 </Link>
                 <Link
-                    href={'/settings'}
+                    href={'/admins'}
+                    className={pathname.includes('/admins') ? activeLink : inactiveLink}
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className={pathname.includes('/admins') ? activeIcon : inactiveIcon}
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
+                        />
+                    </svg>
+                    Tài khoản
+                </Link>
+
+                {/* <button
+                    onClick={() => disconnect()}
                     className={pathname.includes('/settings') ? activeLink : inactiveLink}
                 >
                     <svg
@@ -109,7 +132,7 @@ export default function Nav({ show }) {
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className={pathname.includes('/settings') ? activeIcon : inactiveIcon}
+                        className={pathname.includes('/settings') ? activeLink : inactiveLink}
                     >
                         <path
                             strokeLinecap="round"
@@ -122,8 +145,8 @@ export default function Nav({ show }) {
                             d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                         />
                     </svg>
-                    Cài đặt
-                </Link>
+                    Đăng xuất
+                </button> */}
             </nav>
         </aside>
     );

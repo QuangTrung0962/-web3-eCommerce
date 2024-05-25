@@ -37,6 +37,7 @@ const NavLink = styled(Link)`
 
 export default function Header() {
   const { cartProducts } = useContext(CartContext);
+  const address = useAddress();
   return (
     <StyledHeader>
       <Center>
@@ -46,16 +47,28 @@ export default function Header() {
             <NavLink href={"/"}>Trang chủ</NavLink>
             <NavLink href={"/products"}>Sản phẩm</NavLink>
             <NavLink href={"/catergories"}>Danh mục</NavLink>
-            <NavLink href={"/account"}>Tài khoản</NavLink>
             <NavLink href={"/cart"}>Giỏ hàng ({cartProducts.length})</NavLink>
-            <ConnectWallet
-              btnTitle={"Đăng nhập"}
-              modalTitle={"Phương thức đăng nhập"}
-              theme={"dark"}
-              modalSize={"wide"}
-              modalTitleIconUrl={""}
-              showThirdwebBranding={false}
-            />
+
+            {address != null ? (
+              <>
+                <NavLink href={"/orders"}>Đơn hàng</NavLink>
+                <ConnectWallet
+                  btnTitle={"Đăng nhập"}
+                  modalTitle={"Phương thức đăng nhập"}
+                  theme={"dark"}
+                  modalSize={"wide"}
+                  modalTitleIconUrl={""}
+                  showThirdwebBranding={false}
+                  style={{
+                    position: "relative",
+                    padding: "8px 4px",
+                    top: "-14px",
+                  }}
+                />
+              </>
+            ) : (
+              <NavLink href={"/login"}>Đăng nhập</NavLink>
+            )}
           </StyledNav>
         </Wrapper>
       </Center>

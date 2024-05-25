@@ -1,10 +1,12 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 
+//localhost
 export const SDK = new ThirdwebSDK('sepolia');
 
-export const CONTRACT_PRODUCT_ADDRESS = '0x55A9a7e1c45FF45e3Ff4b8295BD901025ce0e554';
-export const CONTRACT_CATERGOTY_ADDRESS = '0xad56Ed62ec7Cb322c7546D9a560686E031EE472C';
-export const CONTRACT_STORE_ADDRESS = '0x9875AE8810A4182e472d9bD29A674570739F3F6D';
+export const CONTRACT_PRODUCT_ADDRESS = '0xaDa44A194A24a82c9Bfc13f5b6d112bF4d698Aa9';
+export const CONTRACT_CATEGORY_ADDRESS = '0xdd3Db257875352D8F60C1c635bC10adB8b71a7CD';
+export const CONTRACT_AUTH_ADDRESS = '0xf4B44c8858aae0179be511c4F6a1370eFeFF84eE';
+export const CONTRACT_ORDER_ADDRESS = '0x3e8bEC409B1ebA5b381f5d35D6D4EDd129B9c2e2';
 
 export function bigNumberToString(productId) {
     if (productId?._isBigNumber) {

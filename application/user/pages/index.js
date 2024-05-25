@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import { CONTRACT_PRODUCT_ADDRESS } from "../../admin/constants/constant";
 import { useContractRead, useContract } from "@thirdweb-dev/react";
 import NewProducts from "../components/NewProduct";
+import SPFooter from "../components/Footer";
 
 export default function HomePage({}) {
   const featuredProductId = "1";
@@ -20,6 +21,7 @@ export default function HomePage({}) {
       <Header />
       <Featured product={product} />
       <NewProducts products={products} />
+      <SPFooter />
     </div>
   );
 }

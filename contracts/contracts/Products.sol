@@ -2,24 +2,27 @@
 pragma solidity ^0.8.11;
 
 contract Products {
-    struct Property {
-        string color;
-        string memoryStore;
-    }
-
     struct Product {
         uint256 id;
         string productName;
         string description;
         uint256 price;
         string[] images;
-        uint256 catergoryId;
-        Property property;
+        uint256 categoryId;
+    }
+
+    struct Review {
+        address user;
+        uint256 productId;
+        uint256 rating;
+        string comment;
+        string times;
     }
 
     uint256 public productCount;
     address public owner;
     Product[] public products;
+    Review[] public reviews;
 
     constructor() {
         owner = msg.sender;
@@ -45,14 +48,51 @@ contract Products {
     );
     event deleted(uint256 id);
 
+    function addReview(
+        address _user,
+        uint256 _productId,
+        uint256 _rating,
+        string memory _comment,
+        string memory _times
+    ) external {
+        Review memory newReview = Review(
+            _user,
+            _productId,
+            _rating,
+            _comment,
+            _times
+        );
+
+        reviews.push(newReview);
+    }
+
+    function getReviewByProductId(uint256 _productId)
+        external
+        view
+        returns (Review[] memory)
+    {
+        Review[] memory tmp = new Review[](reviews.length);
+
+        for (uint256 i = 0; i < reviews.length; i++) {
+            if (reviews[i].productId == _productId) {
+                tmp[i] = reviews[i];
+            }
+        }
+        return tmp;
+    }
+
+    function deleteReviews() external {
+        delete reviews;
+    }
+
+    //For product
+
     function addProduct(
         string memory _productName,
         string memory _description,
         uint256 _price,
         string[] memory _inputImages,
-        uint256 _catergoryId,
-        string memory _color,
-        string memory _memoryStore
+        uint256 _catergoryId
     ) external {
         uint256 index;
         bool check = false;
@@ -64,17 +104,15 @@ contract Products {
             }
         }
 
-        Property memory property = Property(_color, _memoryStore);
-
         Product memory newProduct = Product(
             ++productCount,
             _productName,
             _description,
             _price,
             _inputImages,
-            _catergoryId,
-            property
+            _catergoryId
         );
+
         if (check) {
             products[index] = newProduct;
         } else {
@@ -97,6 +135,20 @@ contract Products {
         return getProduct(_id);
     }
 
+    function getProductByCategoryId(uint256 _id)
+        external
+        view
+        returns (Product[] memory)
+    {
+        Product[] memory tmp = new Product[](productCount);
+        for (uint256 i = 0; i < productCount; i++) {
+            if (products[i].categoryId == _id) {
+                tmp[i] = products[i];
+            }
+        }
+        return tmp;
+    }
+
     //internal function
     function getProduct(uint256 _id) internal view returns (Product storage) {
         for (uint256 i = 0; i < productCount; i++) {
@@ -114,21 +166,17 @@ contract Products {
         string memory _description,
         uint256 _price,
         string[] memory _inputImages,
-        uint256 _catergoryId,
-         string memory _color,
-        string memory _memoryStore
+        uint256 _categoryId
     ) external {
         require(_id <= productCount, "Invalid product ID");
         Product storage oldProduct = getProduct(_id);
         require(oldProduct.id != 0, "Product does not exist");
 
-        Property memory newProperty = Property(_color, _memoryStore);
         oldProduct.productName = _productName;
         oldProduct.description = _description;
         oldProduct.price = _price;
         oldProduct.images = _inputImages;
-        oldProduct.catergoryId = _catergoryId;
-        oldProduct.property = newProperty;
+        oldProduct.categoryId = _categoryId;
 
         //Thêm 1 event vào để thông báo rằng đã sửa thành công
         emit edited(_id, _productName, _description, _price);

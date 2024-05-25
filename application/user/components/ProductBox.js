@@ -4,6 +4,7 @@ import Button from "./Button";
 import CartIcon from "./icons/CartIcon";
 import { useContext } from "react";
 import { CartContext } from "./CartContext";
+
 const ProductWrapper = styled.div``;
 
 const WhiteBox = styled(Link)`

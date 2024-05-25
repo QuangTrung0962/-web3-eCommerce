@@ -1,92 +1,49 @@
+import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import { CONTRACT_CATEGORY_ADDRESS, SDK } from '../constants/constant';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { CONTRACT_PRODUCT_ADDRESS, SDK } from '../constants/constant.js';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Container,
-    InputAdornment,
-    TextField,
-} from '@mui/material';
-import { AiOutlineSearch } from 'react-icons/ai';
 
-export default function Products() {
-    const [products, setProducts] = useState();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [filteredData, setFilteredData] = useState([]);
+export default function Categories() {
+    const [categories, setCategories] = useState([]);
 
-    //UseEffect for call async function
-    useEffect(() => {
-        getAllProducts();
-    }, []);
-
-    //Function for get All Products
-    async function getAllProducts() {
-        const contract = await SDK.getContract(CONTRACT_PRODUCT_ADDRESS);
-        const result = await contract.call('getAllProducts');
-        setProducts(result);
-        setFilteredData(result);
+    async function getAllCategories() {
+        const contract = await SDK.getContract(CONTRACT_CATEGORY_ADDRESS);
+        const result = await contract.call('getAllCategories');
+        setCategories(result);
     }
 
-    const handleSearchInputChange = (event) => {
-        setSearchQuery(event.target.value);
-        const fillterData = products.filter(
-            (item) =>
-                item.productName &&
-                item.productName.toLowerCase().includes(event.target.value.toLowerCase())
-        );
-        setFilteredData(fillterData);
-    };
+    useEffect(() => {
+        getAllCategories();
+    }, []);
 
     return (
         <Layout>
-            <div>
-                <TextField
-                    id="search"
-                    type="search"
-                    label="Tìm kiếm sản phẩm"
-                    onChange={handleSearchInputChange}
-                    className="placeholder-animation"
-                    sx={{ width: { xs: 350, sm: 500, md: 800 } }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <AiOutlineSearch />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-            </div>
+            <h1>Danh mục sản phẩm</h1>
             <Link
                 className="btn-primary"
-                href={'/products/new'}
+                href={'/categories/newCategory'}
                 style={{ margin: '10px 0', display: 'inline-block' }}
             >
-                Thêm sản phẩm
+                Thêm danh mục
             </Link>
-            {filteredData && (
+
+            {categories && (
                 <table className="basic mt-2">
                     <thead>
                         <tr>
-                            <td>Tên sản phẩm</td>
+                            <td>Tên danh mục</td>
                             <td></td>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredData &&
-                            filteredData.map((product) => (
-                                <tr key={product.id}>
-                                    <td>{product.productName?.toString()}</td>
+                        {categories &&
+                            categories.map((category) => (
+                                <tr key={category.id}>
+                                    <td>{category.categoryName?.toString()}</td>
                                     <td>
                                         <Link
                                             className="btn-default"
-                                            href={'/products/edit/' + product.id}
+                                            href={'/categories/edit/' + category.id}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +63,7 @@ export default function Products() {
                                         </Link>
                                         <Link
                                             className="btn-red"
-                                            href={'/products/delete/' + product.id}
+                                            href={'/categories/delete/' + category.id}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"

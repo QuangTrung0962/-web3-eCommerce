@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Web3Button, useStorageUpload } from '@thirdweb-dev/react';
-import { CONTRACT_PRODUCT_ADDRESS, SDK, CONTRACT_CATERGOTY_ADDRESS } from '../constants/constant';
+import { CONTRACT_PRODUCT_ADDRESS, SDK, CONTRACT_CATEGORY_ADDRESS } from '../constants/constant';
 import { useRouter } from 'next/router.js';
 import Spinner from './Spinner';
 import { ReactSortable } from 'react-sortablejs';
+import { toast } from 'react-toastify';
 
 export default function ProductForm({
     func,
@@ -12,37 +13,24 @@ export default function ProductForm({
     price: existingPrice,
     _id,
     images: existingImages,
-    catergoryId: assignedCatergoryId,
-    color: existingColor,
-    memoryStore: existingMemoryStore,
+    categoryId: assignedCategoryId,
 }) {
     const [title, setTitle] = useState(existingTitle || '');
     const [description, setDescription] = useState(existingDesc || '');
     const [price, setPrice] = useState(existingPrice || '');
     const [images, setImages] = useState(existingImages || []);
-    const [color, setColor] = useState(existingColor || '');
-    const [memoryStore, setMemoryStore] = useState(existingMemoryStore || '');
     const [isUploading, setIsUploading] = useState(false);
-    const [catergories, setCatergories] = useState([]);
-    const [catergoryId, setCatergoryId] = useState(assignedCatergoryId || '1');
-    const [catergory, setCatergory] = useState();
+    const [categories, setCatergories] = useState([]);
+    const [categoryId, setCategoryId] = useState(assignedCategoryId || '1');
+    const [category, setCategory] = useState();
     const { mutateAsync: uploadImageFunc } = useStorageUpload();
     const router = useRouter();
 
     let parameter = [];
     if (_id) {
-        parameter = [
-            parseInt(_id),
-            title,
-            description,
-            price,
-            images,
-            parseInt(catergoryId),
-            color,
-            memoryStore,
-        ];
+        parameter = [parseInt(_id), title, description, price, images, parseInt(categoryId)];
     } else {
-        parameter = [title, description, price, images, parseInt(catergoryId), color, memoryStore];
+        parameter = [title, description, price, images, parseInt(categoryId)];
     }
 
     //Upload product images to IPFS
@@ -68,30 +56,39 @@ export default function ProductForm({
     }
 
     //Get Catergories
-    async function getAllCatergories() {
-        const contract = await SDK.getContract(CONTRACT_CATERGOTY_ADDRESS);
-        const result = await contract.call('getAllCatergories');
+    async function getAllCategories() {
+        const contract = await SDK.getContract(CONTRACT_CATEGORY_ADDRESS);
+        const result = await contract.call('getAllCategories');
         setCatergories(result);
     }
 
     //Get Catergory by Id
-    async function getCatergoryById(id) {
-        const contract = await SDK.getContract(CONTRACT_CATERGOTY_ADDRESS);
+    async function getCategoryById(id) {
+        const contract = await SDK.getContract(CONTRACT_CATEGORY_ADDRESS);
         //Truyen vo string khi call read function
-        const result = await contract.call('getCatergoryById', id);
-        setCatergory(result);
+        const result = await contract.call('getCategoryById', id);
+        setCategory(result);
     }
 
     const handleSaveProduct = async () => {
-        // Thực hiện hành động của func
-        await func({ args: parameter });
-
-        router.push('/products');
+        if (!title || !description || !price || !images) {
+            toast.error('Hãy điền tất cả các trường', {
+                autoClose: 500,
+                theme: 'colored',
+            });
+        } else {
+            await func({ args: parameter });
+            toast.success('Thêm sản phẩm thành công', {
+                autoClose: 500,
+                theme: 'colored',
+            });
+            router.push('/products');
+        }
     };
 
     useEffect(() => {
-        getCatergoryById(catergoryId.toString());
-        getAllCatergories();
+        getCategoryById(categoryId.toString());
+        getAllCategories();
     }, []);
 
     return (
@@ -105,38 +102,16 @@ export default function ProductForm({
             />
             <label>Danh mục</label>
             <select
-                value={catergoryId}
+                value={categoryId}
                 onChange={(ev) => {
-                    setCatergoryId(ev.target.value);
-                    getCatergoryById(ev.target.value);
+                    setCategoryId(ev.target.value);
+                    getCategoryById(ev.target.value);
                 }}
             >
-                {catergories.length > 0 &&
-                    catergories.map((c) => <option value={c.id}>{c.catergoryName}</option>)}
+                {categories.length > 0 &&
+                    categories.map((c) => <option value={c.id}>{c.categoryName}</option>)}
             </select>
-            {catergory && (
-                <>
-                    <div className="">
-                        <label>Màu sắc</label>
-                        <select value={color} onChange={(ev) => setColor(ev.target.value)}>
-                            {catergory.colors.map((p) => (
-                                <option value={p}>{p}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="">
-                        <label>Dung lương(GB)</label>
-                        <select
-                            value={memoryStore}
-                            onChange={(ev) => setMemoryStore(ev.target.value)}
-                        >
-                            {catergory.memoryStore.map((p) => (
-                                <option value={p}>{p}</option>
-                            ))}
-                        </select>
-                    </div>
-                </>
-            )}
+
             <label>Hình ảnh sản phẩm</label>
             <div className="mb-2 flex flex-wrap gap-1">
                 <ReactSortable

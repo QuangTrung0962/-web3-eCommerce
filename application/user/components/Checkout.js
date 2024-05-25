@@ -1,16 +1,17 @@
 import { toWei } from "thirdweb";
-import { CONTRACT_STORE_ADDRESS } from "../../admin/constants/constant";
-import { Web3Button, useContract, useContractWrite } from "@thirdweb-dev/react";
+import { CONTRACT_ORDER_ADDRESS } from "../../admin/constants/constant";
+import { Web3Button } from "@thirdweb-dev/react";
+
 export default function Checkout({ totalPrice }) {
   return (
     <Web3Button
-      contractAddress={CONTRACT_STORE_ADDRESS}
+      contractAddress={CONTRACT_ORDER_ADDRESS}
       action={(contract) => {
         contract.call("depositFunds", [], {
-          value: toWei((totalPrice / 1000000000).toString()),
+          value: toWei((totalPrice / 100000000).toString()),
         });
       }}
-      onSuccess={() => alert("TC")}
+      onSuccess={() => {}}
     >
       Thanh toán
     </Web3Button>

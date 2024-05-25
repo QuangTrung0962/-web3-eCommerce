@@ -46,8 +46,13 @@ table.basic thead tr th {
 
 table.basic tr td {
     @apply py-1;
-    padding-left: 3rem;
+    padding-left: 1rem;
     padding-right: 1rem;
+}
+
+table.orderTable tr td {
+    padding-left: 3rem;
+    padding-right: 2rem;
 }
 
 table.basic a {
@@ -70,4 +75,14 @@ table.basic a {
 
 .btn-default-fix {
     @apply text-sm !important;
+}
+
+.titel-Login {
+    font-weight: bold;
+    font-size: 1.75rem;
+}
+
+.css-1o0edqz {
+    font-size: 16px;
+    color: hsl(230deg 11.63% 12%);
 }

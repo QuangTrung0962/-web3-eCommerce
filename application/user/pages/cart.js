@@ -3,12 +3,17 @@ import { useContext, useEffect, useState } from "react";
 import { CartContext } from "../components/CartContext";
 import {
   CONTRACT_PRODUCT_ADDRESS,
-  CONTRACT_STORE_ADDRESS,
+  CONTRACT_ORDER_ADDRESS,
   SDK,
   bigNumberToString,
   numberWithCommas,
 } from "../../admin/constants/constant";
-import { Web3Button, useContract, useContractWrite } from "@thirdweb-dev/react";
+import {
+  Web3Button,
+  useContract,
+  useContractWrite,
+  useAddress,
+} from "@thirdweb-dev/react";
 import { format } from "date-fns";
 import Checkout from "../components/Checkout";
 import Header from "../components/Header";
@@ -16,6 +21,7 @@ import Center from "../components/Center";
 import Button from "../components/Button";
 import Table from "../components/Table";
 import Input from "../components/Input";
+import { useRouter } from "next/router.js";
 
 const ColumnsWrapper = styled.div`
   display: grid;
@@ -79,10 +85,6 @@ const TolalRed = styled.span`
   color: red;
 `;
 
-const CenterH2 = styled.h2`
-  margin-bottom: 10px;
-`;
-
 export default function CartPage() {
   const { cartProducts, addProduct, removeProduct, clearCart } =
     useContext(CartContext);
@@ -94,8 +96,9 @@ export default function CartPage() {
   const [district, setDistrict] = useState("");
   const [ward, setWard] = useState("");
   const [details, setDetails] = useState("");
-  const [clear, setclear] = useState(false);
-  const { contract } = useContract(CONTRACT_STORE_ADDRESS);
+  const { contract } = useContract(CONTRACT_ORDER_ADDRESS);
+  const address = useAddress();
+  const router = useRouter();
 
   const {
     mutateAsync: createOrder,
@@ -139,21 +142,23 @@ export default function CartPage() {
       return [item.productName, quantity];
     });
 
-    await createOrder({
-      args: [
-        name,
-        email,
-        phoneNumber,
-        province,
-        district,
-        ward,
-        details,
-        formattedTime,
-        total,
-        parseInt(products.length),
-        orderProducts,
-      ],
-    });
+    console.log(orderProducts);
+
+    // await createOrder({
+    //   args: [
+    //     name,
+    //     email,
+    //     phoneNumber,
+    //     province,
+    //     district,
+    //     ward,
+    //     details,
+    //     formattedTime,
+    //     total,
+    //     parseInt(products.length),
+    //     orderProducts,
+    //   ],
+    // });
   }
 
   useEffect(() => {
@@ -181,7 +186,7 @@ export default function CartPage() {
 
   useEffect(() => {
     if (createOrderSuccess) {
-      clearCart();
+      //clearCart();
     }
   }, [createOrderSuccess]);
 
@@ -207,7 +212,7 @@ export default function CartPage() {
       <Center>
         <ColumnsWrapper>
           <Box>
-            <CenterH2>Giỏ hàng</CenterH2>
+            <h2>Giỏ hàng</h2>
             {!cartProducts?.length && !createOrderSuccess && (
               <div>Giỏ hàng của bạn đang trống !</div>
             )}
@@ -311,7 +316,7 @@ export default function CartPage() {
                 />
                 <Input
                   type="text"
-                  placeholder="Huyện"
+                  placeholder="Xã"
                   onChange={(ev) => setWard(ev.target.value)}
                   value={ward}
                 />
@@ -323,13 +328,23 @@ export default function CartPage() {
                 value={details}
               />
 
-              <Web3Button
-                className="newOrder-btn "
-                contractAddress={CONTRACT_PRODUCT_ADDRESS}
-                action={setNewOrder}
-              >
-                Tiếp tục thanh toán
-              </Web3Button>
+              {address === undefined ? (
+                <button
+                  onClick={() => router.push("/login")}
+                  style={{ border: "none", cursor: "pointer" }}
+                  className="newOrder-btn"
+                >
+                  Tiếp tục thanh toán
+                </button>
+              ) : (
+                <Web3Button
+                  className="newOrder-btn"
+                  contractAddress={CONTRACT_PRODUCT_ADDRESS}
+                  action={setNewOrder}
+                >
+                  Tiếp tục thanh toán
+                </Web3Button>
+              )}
             </Box>
           )}
         </ColumnsWrapper>

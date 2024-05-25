@@ -1,133 +1,114 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.11;
 
-contract Catergories {
-    struct Catergory {
+contract Categories {
+    
+    struct Category {
         uint256 id;
-        string catergoryName;
-        uint256 parentId; 
-        string[] colors;
-        string[] memoryStore;
+        string categoryName;
+        string logo;
     }
 
     uint256 public count;
-    address public owner;
-    Catergory[] public catergories;
-    uint256 public lenghArray;
-
-    constructor() {
-        owner = msg.sender;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not the owner");
-        _;
-    }
+    Category[] public categories;
+    uint256 public lengthArray;
 
     //Event
-    event created(uint256 id, string catergoryName);
-    event edited(uint256 id, string catergoryName);
+    event created(uint256 id, string categoryName);
+    event edited(uint256 id, string categoryName);
     event deleted(uint256 id);
 
-    function addCatergory(
-        string memory _catergoryName,
-        uint256 _parentId,
-        string[] memory _colors,
-        string[] memory _memoryStore
+    function addCategory(
+        string memory _categoryName,
+        string memory _logo
     ) external {
         uint256 index;
         bool check = false;
-        for (uint256 i = 0; i < catergories.length; i++) {
-            if (catergories[i].id == 0) {
+        for (uint256 i = 0; i < categories.length; i++) {
+            if (categories[i].id == 0) {
                 index = i;
                 check = true;
                 break;
             }
         }
 
-        Catergory memory newCatergory = Catergory(
+        Category memory newCategory = Category(
             ++count,
-            _catergoryName,
-            _parentId,
-            _colors,
-            _memoryStore
+            _categoryName,
+            _logo
         );
 
         if (check) {
-            catergories[index] = newCatergory;
+            categories[index] = newCategory;
         } else {
-            catergories.push(newCatergory);
+            categories.push(newCategory);
         }
 
         //Thêm 1 event vào để thông báo rằng đã thêm thành công
-        emit created(newCatergory.id, newCatergory.catergoryName);
+        emit created(newCategory.id, newCategory.categoryName);
     }
 
-    function getAllCatergories() public view returns (Catergory[] memory) {
-        Catergory[] memory tmp = new Catergory[](count);
+    function getAllCategories() public view returns (Category[] memory) {
+        Category[] memory tmp = new Category[](count);
         for (uint256 i = 0; i < count; i++) {
-            tmp[i] = catergories[i];
+            tmp[i] = categories[i];
         }
 
         return tmp;
     }
 
-    function getCatergoryById(uint256 _id)
+    function getCategoryById(uint256 _id)
         public
         view
-        returns (Catergory memory)
+        returns (Category memory)
     {
-        return getCatergory(_id);
+        return getCategory(_id);
     }
 
     //internal function
-    function getCatergory(uint256 _id)
+    function getCategory(uint256 _id)
         internal
         view
-        returns (Catergory storage)
+        returns (Category storage)
     {
         for (uint256 i = 0; i < count; i++) {
-            if (catergories[i].id == _id) {
-                return catergories[i];
+            if (categories[i].id == _id) {
+                return categories[i];
             }
         }
         // Nếu không tìm thấy sản phẩm, trả về một sản phẩm rỗng
-        revert("Catergory not found");
+        revert("Category not found");
     }
 
-    function editCatergory(
+    function editCategory(
         uint256 _id,
-        string memory _catergoryName,
-        uint256 _parentId,
-        string[] memory _colors,
-        string[] memory _memoryStore
+        string memory _categoryName,
+        string memory _logo
     ) external {
-        require(_id <= count, "Invalid Catergory ID");
-        Catergory storage oldCatergory = getCatergory(_id);
-        require(oldCatergory.id != 0, "Catergory does not exist");
+        require(_id <= count, "Invalid Category ID");
+        Category storage oldCategory = getCategory(_id);
+        require(oldCategory.id != 0, "Category does not exist");
 
-        oldCatergory.catergoryName = _catergoryName;
-        oldCatergory.parentId = _parentId;
-        oldCatergory.colors = _colors;
-        oldCatergory.memoryStore = _memoryStore;
+        oldCategory.categoryName = _categoryName;
+        oldCategory.logo = _logo;
 
         //Thêm 1 event vào để thông báo rằng đã sửa thành công
-        emit edited(oldCatergory.id, oldCatergory.catergoryName);
+        emit edited(oldCategory.id, oldCategory.categoryName);
     }
 
-    function deleteCatergory(uint256 _id) external {
-        require(_id <= count, "Invalid Catergory ID");
+    function deleteCategory(uint256 _id) external {
+        require(_id <= count, "Invalid Category ID");
 
-        Catergory memory tmp = getCatergory(_id);
-        require(tmp.id != 0, "Catergory does not exist");
+        Category memory tmp = getCategory(_id);
+        require(tmp.id != 0, "Category does not exist");
 
         for (uint256 i = _id - 1; i < count - 1; i++) {
-            catergories[i] = catergories[i + 1];
-            catergories[i].id--;
+            categories[i] = categories[i + 1];
+            categories[i].id--;
         }
 
         //Xoa danh muc o cuoi cung
-        delete catergories[count - 1];
+        delete categories[count - 1];
         count--;
 
         //Thêm 1 event vào để thông báo rằng đã xóa thành công
