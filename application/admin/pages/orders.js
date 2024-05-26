@@ -1,8 +1,8 @@
 import Layout from '../components/Layout';
-import { useContract, useContractRead } from '@thirdweb-dev/react';
+import { Web3Button, useContract, useContractRead } from '@thirdweb-dev/react';
 import { CONTRACT_AUTH_ADDRESS, CONTRACT_ORDER_ADDRESS } from '../constants/constant';
 import { bigNumberToString, numberWithCommas } from '../constants/constant';
-import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 export default function OrdersPage() {
     const { contract } = useContract(CONTRACT_ORDER_ADDRESS);
@@ -22,6 +22,18 @@ export default function OrdersPage() {
         };
     });
 
+    async function deleteOrder(contract, index) {
+        try {
+            await contract.call('delelteOrder', [index]);
+            toast.success('Xóa đơn thành công', {
+                autoClose: 500,
+                theme: 'colored',
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <Layout>
             <h1>Đơn hàng</h1>
@@ -29,7 +41,7 @@ export default function OrdersPage() {
                 <thead>
                     <tr>
                         <th>Ngày mua</th>
-                        <th>Thông tin khách hàng</th>
+                        <th style={{ width: '250px' }}>Thông tin khách hàng</th>
                         <th>Sản phẩm</th>
                         <th>Tổng tiền</th>
                         <th></th>
@@ -38,16 +50,16 @@ export default function OrdersPage() {
                 <tbody>
                     {combinedData &&
                         combinedData.map(
-                            (p) =>
+                            (p, index) =>
                                 p.timestamp != '' && (
-                                    <tr>
-                                        <td>{p.timestamp}</td>
+                                    <tr key={index}>
+                                        <td>{p?.timestamp}</td>
                                         <td>
-                                            {p.user.firstName} {p.user.email} <br />
-                                            {p.user.province}, {p.user.district}, {p.user.ward}
-                                            {p.user.details}
+                                            {p.user?.firstName} {p.user?.email} <br />
+                                            {p.user?.province}, {p.user?.district}, {p.user?.ward}
+                                            {p.user?.details}
                                             <br />
-                                            SĐT: {p.user.phoneNumber}
+                                            SĐT: {p.user?.phoneNumber}
                                         </td>
                                         <td>
                                             {p.products.map((item) => (
@@ -59,7 +71,17 @@ export default function OrdersPage() {
                                         </td>
                                         <td>{numberWithCommas(bigNumberToString(p.total))}₫</td>
                                         <td>
-                                            <Link className="btn-red" href={'/'}>
+                                            <Web3Button
+                                                className="btn-red "
+                                                contractAddress={CONTRACT_ORDER_ADDRESS}
+                                                action={(contract) => deleteOrder(contract, index)}
+                                                style={{
+                                                    height: '40px',
+                                                    width: '80px',
+                                                    gap: '5px',
+                                                    justifyContent: 'center',
+                                                }}
+                                            >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     fill="none"
@@ -75,7 +97,7 @@ export default function OrdersPage() {
                                                     />
                                                 </svg>
                                                 Hủy
-                                            </Link>
+                                            </Web3Button>
                                         </td>
                                     </tr>
                                 )

@@ -9,27 +9,11 @@ export default function Home() {
     const address = useAddress();
     const router = useRouter();
 
-    const { contract } = useContract(CONTRACT_AUTH_ADDRESS);
-    const {
-        data: account,
-        isLoading,
-        isError,
-    } = useContractRead(contract, 'getAdminByAddress', [address]);
-
-    console.log(isError);
     useEffect(() => {
-        if (isError == false) {
-        } else {
-            console.log('velog');
+        if (address === undefined) {
             router.push('/');
         }
-    }, [isError]);
-
-    // useEffect(() => {
-    //     if (address === undefined) {
-    //         router.push('/');
-    //     }
-    // }, [address]);
+    }, [address]);
 
     return (
         <Layout>
