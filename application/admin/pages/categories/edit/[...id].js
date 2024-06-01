@@ -26,7 +26,7 @@ export default function EditCategoryPage() {
         <Layout>
             {category && (
                 <>
-                    <h1>Cập nhật sản phẩm</h1>
+                    <h1>Cập nhật danh mục</h1>
                     <CategoryForm
                         _id={id}
                         title={category.categoryName}

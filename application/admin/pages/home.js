@@ -1,19 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { ConnectWallet, useAddress, useContract, useContractRead } from '@thirdweb-dev/react';
 import { useRouter } from 'next/router';
 import { CONTRACT_AUTH_ADDRESS } from '../constants/constant';
 import { toast } from 'react-toastify';
+import BasicTabs from '../components/AdminTabs';
 
 export default function Home() {
     const address = useAddress();
     const router = useRouter();
+    const [user, setUser] = useState([]);
 
     useEffect(() => {
         if (address === undefined) {
             router.push('/');
         }
     }, [address]);
+
+    const getAllUser = async () => {};
 
     return (
         <Layout>
@@ -28,6 +32,7 @@ export default function Home() {
                     showThirdwebBranding={false}
                 />
             </div>
+            <BasicTabs user={user} getUser={getAllUser} />
         </Layout>
     );
 }

@@ -19,6 +19,10 @@ contract Orders {
         uint256 quantity;
     }
 
+    uint256 revenue = 0;
+    uint256 numberProduct = 0;
+    uint256 numberOrder = 0;
+
     Order[] public orders;
     address public owner;
 
@@ -40,6 +44,10 @@ contract Orders {
     ) external payable  {
         uint id = orders.length;
 
+        revenue += _total;
+        numberProduct += _itemCount;
+        numberOrder++;
+
         Order storage newOrder = orders.push();
         newOrder.id = id;
         newOrder.user = msg.sender;
@@ -55,25 +63,29 @@ contract Orders {
         require(success, "Failed to send Ether to owner");
     }
 
-    function delelteOrder(uint _id) external {
+    function delelteOrder(uint _id, uint256 _total, uint256 _itemCount) external {
         delete orders[_id];
+        revenue -= _total;
+        numberProduct -= _itemCount;
+        numberOrder--;
     }
 
 
     function refund(
-        address _user
+        address _user, uint _id, uint256 _total, uint256 _itemCount
     ) external payable {
         require(msg.value > 0, "You need to have ether for refund");
         (bool success,) = _user.call{value: msg.value}("");
         require(success, "Failed to send Ether");
+        delete orders[_id];
+
+        revenue -= _total;
+        numberProduct -= _itemCount;
+        numberOrder--;
     }
 
     function getAllOrders() external view returns (Order[] memory) {
         return orders;
-    }
-
-    function getOrdersCount() external view returns (uint256) {
-        return orders.length;
     }
 
     function delelteAll() external onlyOwner {
@@ -82,5 +94,17 @@ contract Orders {
 
     function getDeposit() external view returns (uint256) {
         return address(this).balance;
+    }
+
+    function getOrdersCount() external view returns (uint256) {
+        return numberOrder;
+    }
+
+    function getRevenue() external view returns (uint256) {
+        return revenue;
+    }
+
+    function getNumberProduct() external view returns (uint256) {
+        return numberProduct;
     }
 }

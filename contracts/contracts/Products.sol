@@ -8,21 +8,13 @@ contract Products {
         string description;
         uint256 price;
         string[] images;
+        uint256 rating;
         uint256 categoryId;
     }
-
-    struct Review {
-        address user;
-        uint256 productId;
-        uint256 rating;
-        string comment;
-        string times;
-    }
-
+    
     uint256 public productCount;
     address public owner;
     Product[] public products;
-    Review[] public reviews;
 
     constructor() {
         owner = msg.sender;
@@ -47,43 +39,6 @@ contract Products {
         uint256 price
     );
     event deleted(uint256 id);
-
-    function addReview(
-        address _user,
-        uint256 _productId,
-        uint256 _rating,
-        string memory _comment,
-        string memory _times
-    ) external {
-        Review memory newReview = Review(
-            _user,
-            _productId,
-            _rating,
-            _comment,
-            _times
-        );
-
-        reviews.push(newReview);
-    }
-
-    function getReviewByProductId(uint256 _productId)
-        external
-        view
-        returns (Review[] memory)
-    {
-        Review[] memory tmp = new Review[](reviews.length);
-
-        for (uint256 i = 0; i < reviews.length; i++) {
-            if (reviews[i].productId == _productId) {
-                tmp[i] = reviews[i];
-            }
-        }
-        return tmp;
-    }
-
-    function deleteReviews() external {
-        delete reviews;
-    }
 
     //For product
 
@@ -110,6 +65,7 @@ contract Products {
             _description,
             _price,
             _inputImages,
+            0,
             _catergoryId
         );
 
@@ -140,10 +96,18 @@ contract Products {
         view
         returns (Product[] memory)
     {
-        Product[] memory tmp = new Product[](productCount);
+        uint count = 0;
+         for (uint256 i = 0; i < productCount; i++) {
+            if (products[i].categoryId == _id) {
+                count++;
+            }
+        }
+
+        uint index = 0;
+        Product[] memory tmp = new Product[](count);
         for (uint256 i = 0; i < productCount; i++) {
             if (products[i].categoryId == _id) {
-                tmp[i] = products[i];
+                tmp[index] = products[i]; index++;
             }
         }
         return tmp;
@@ -200,5 +164,11 @@ contract Products {
 
         //Thêm 1 event vào để thông báo rằng đã xóa thành công
         emit deleted(_id);
+    }
+
+    function deleteAllProducts(
+    ) external {
+        productCount = 0;
+        delete products;
     }
 }

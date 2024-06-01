@@ -25,6 +25,7 @@
     "next": "^13",
     "postcss": "^8.4.38",
     "react": "^18.2",
+    "react-countup": "^6.5.3",
     "react-dom": "^18.2",
     "react-icons": "^5.2.1",
     "react-sortablejs": "^6.1.4",

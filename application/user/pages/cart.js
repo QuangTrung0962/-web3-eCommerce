@@ -142,8 +142,6 @@ export default function CartPage() {
       return [item.productName, quantity];
     });
 
-    console.log(orderProducts);
-
     // await createOrder({
     //   args: [
     //     name,
