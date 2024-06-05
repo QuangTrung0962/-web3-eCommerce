@@ -10,6 +10,7 @@ contract Orders {
         string timestamp;
         uint256 total;
         uint itemCount;
+        string status;
         Item[] items;
     }
 
@@ -54,6 +55,7 @@ contract Orders {
         newOrder.timestamp = _timestamp;
         newOrder.itemCount = _itemCount;
         newOrder.total = _total;
+        newOrder.status = "";
 
         for (uint256 i = 0; i < _itemCount; i++) {
             newOrder.items.push(_items[i]);
@@ -63,13 +65,13 @@ contract Orders {
         require(success, "Failed to send Ether to owner");
     }
 
-    function delelteOrder(uint _id, uint256 _total, uint256 _itemCount) external {
-        delete orders[_id];
-        revenue -= _total;
-        numberProduct -= _itemCount;
-        numberOrder--;
+    function delelteOrder(uint _id) external {
+        for (uint i = 0; i < orders.length; i++) {
+            if (orders[i].id == _id) {
+                orders[i].status = "delete";
+            }
+        }
     }
-
 
     function refund(
         address _user, uint _id, uint256 _total, uint256 _itemCount
